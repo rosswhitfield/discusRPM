@@ -1,0 +1,21 @@
+FROM registry.access.redhat.com/ubi9/ubi
+
+RUN dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm
+RUN dnf install -y https://mirrors.rpmfusion.org/free/el/rpmfusion-free-release-9.noarch.rpm
+# nonfree needed for pgplot
+RUN dnf install -y https://mirrors.rpmfusion.org/nonfree/el/rpmfusion-nonfree-release-9.noarch.rpm
+
+RUN dnf install -y git wget cmake gcc-gfortran gcc-c++ readline libX11 libX11-devel libpng libpng-devel fftw fftw-devel hdf5 hdf5-devel pgplot pgplot-devel rpm-build
+
+RUN dnf install -y https://mirror.stream.centos.org/9-stream/AppStream/x86_64/os/Packages/readline-devel-8.1-4.el9.x86_64.rpm
+
+#ARG version=v.6.17.01
+#RUN wget https://github.com/tproffen/DiffuseCode/archive/refs/tags/"$version".tar.g
+#RUN tar xvf "$version".tar.gz
+#RUN cd DiffuseCode-"$version" && cmake . -B /build
+
+RUN git clone --depth 1 -b cpack_rpm https://github.com/rosswhitfield/DiffuseCode.git
+
+RUN cd DiffuseCode && cmake . -DINSTALL_PGPLOT=OFF -B /build
+RUN cd /build && make -j8
+RUN cd /build && cpack -G RPM
