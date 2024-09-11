@@ -14,8 +14,8 @@ RUN dnf install -y https://mirror.stream.centos.org/9-stream/AppStream/x86_64/os
 #RUN tar xvf "$version".tar.gz
 #RUN cd DiffuseCode-"$version" && cmake . -B /build
 
-RUN git clone --depth 1 -b cpack_rpm https://github.com/rosswhitfield/DiffuseCode.git
+RUN git clone --depth 1 https://github.com/tproffen/DiffuseCode.git
 
 RUN cd DiffuseCode && cmake . -DINSTALL_PGPLOT=OFF -B /build
 RUN cd /build && make -j8
-RUN cd /build && cpack -G RPM
+RUN cd /build && make package
